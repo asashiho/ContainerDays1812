@@ -69,6 +69,7 @@ $ az provider register -n Microsoft.ContainerService
 ```
 
 本ハンズオンで利用するAzure Cloud Shellは、以下のツールがあらかじめインストールされています。
+
 | Category            | Name                                                                            |
 |---------------------|---------------------------------------------------------------------------------|
 | Linux ツール        | Bashzshshtmuxdig                                                                |
@@ -80,6 +81,7 @@ $ az provider register -n Microsoft.ContainerService
 | データベース        | MySQL クライアント/PostgreSql クライアント/sqlcmd ユーティリティ/mssql-scripter    |
 | その他              | iPython クライアント/Cloud Foundry CLI/Terraform/Ansible/Chef InSpec                |
 |                     |                                                                         
+
 また、ブラウザ上でGUIエディタを使用することもできます。
 Cloud Shellのバーにある｛｝ボタンをクリックすると、エディタが起動し、マニフェストファイルなどをGUIで修正できます。
 
@@ -176,6 +178,7 @@ https://www.customvision.ai/
 |    Project Types           |    Classification                          |
 |    Classification Types    |    Multiclass (Single tag per image)       |
 |    Domains                 |    General (compact)                       |
+
 
 ![project](docs/project.png)
 
