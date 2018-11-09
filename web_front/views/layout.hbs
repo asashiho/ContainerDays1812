@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{title}}</title>
+  <link rel='stylesheet' href='/stylesheets/bootswitch.css' media="screen" />
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <a class="navbar-brand" href="#">Image Recognition using Azure</a>
+  </nav>
+
+  <div class="container">
+    {{{body}}}
+  </div>
+
+  <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+  <script>
+    $(document).on('change', ':file', function () {
+      var input = $(this),
+        numFiles = input.get(0).files ? input.get(0).files.length : 1,
+        label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+      input.parent().parent().next(':text').val(label);
+    });        
+  </script>
+
+</body>
+
+</html>

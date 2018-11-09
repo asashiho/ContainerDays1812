@@ -1,0 +1,41 @@
+# 基本項目
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front-deploy
+
+# Deploymentのスペック
+spec:
+  # レプリカ数
+  replicas: 3
+  selector:
+    matchLabels:
+      app: front   # テンプレートの検索条件
+
+  # Podのテンプレート
+  template:
+    metadata:
+      labels:
+        app: front
+    spec:
+      containers:
+      # コンテナイメージの場所
+      - image: acrregistryxxxx.azurecr.io/web-front:v1.0   
+        name: front-container
+        imagePullPolicy: Always
+        
+        # ポート番号
+        ports:
+        - containerPort: 3000
+
+        # 環境変数の設定
+        env:
+          - name: NODE_ENV
+            value: production
+
+          # Azure Blob Storageの接続文字列
+          - name: AZURE_STORAGE_CONNECTION_STRING
+            valueFrom:
+              configMapKeyRef:
+                name: project-config
+                key: keystring

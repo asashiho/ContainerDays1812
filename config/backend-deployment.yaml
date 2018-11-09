@@ -1,0 +1,37 @@
+# 基本項目
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: food-deploy
+
+# Deploymentのスペック
+spec:
+  # レプリカ数
+  replicas: 2
+  selector:
+    matchLabels:
+      app: food   # テンプレートの検索条件
+
+  # Podのテンプレート
+  template:
+    metadata:
+      labels:
+        app: food
+    spec:
+      containers:
+      # コンテナイメージの場所
+      - image: acrregistryxxxx.azurecr.io/food-recognition:v1.0 
+        name: food-container
+
+        # ポート番号
+        ports:
+        - containerPort: 80
+
+        # リソース要求と制限
+        resources: 
+          requests:
+            cpu: 400m
+            memory: 1Gi
+          limits:
+            cpu: 400m
+            memory: 1Gi

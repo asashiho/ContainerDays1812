@@ -1,0 +1,9 @@
+# 基本項目
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: project-config
+
+# アプリに渡したいデータ
+data:
+    keystring: "DefaultEndpointsProtocol=https;EndpointSuffix=core.windows.net;AccountName=blobstoragexxxx;AccountKey=xxxx"

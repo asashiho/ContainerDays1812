@@ -1,0 +1,24 @@
+<p id="message">{{message}}</p>
+
+<form id="upload-form" action="/upload" method="POST" enctype="multipart/form-data">
+    <fieldset>
+        <div class="form-group col col-lg-6 col-md-6 col-sm-12 col-xs-12" id="selectfile"> 
+            <div class="input-group">
+                <div class="custom-file">
+                    <span class="input-group-addon" id="selectfile">
+                        <label>
+                            Choose File
+                            <input id="file-picker" type="file" name="image" accept="image/*" style="display:none" ,
+                                required>
+                        </label>
+                    </span>
+                    <input type="text" class="form-control" aria-label="file" aria-describedby="selectfile">
+                    <input class="btn btn-primary" type=submit value=Upload>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</form>
+
+<hr>
+<p class="text-info">Attention! This app has no official privacy policy. Your data will be uploaded to a service.</p>

@@ -1,0 +1,39 @@
+<h1>Success!</h1>
+<p>{{message}}</p>
+
+<div class="row">
+    <div class="col col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <div class="card">
+            <div class="card-block">
+                <img src="https://{{accountName}}.blob.core.windows.net/{{containerName}}/{{blobName}}" class="img-fluid">
+            </div>
+        </div>
+    </div>
+
+    <div class="col col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <table class="table">
+                    <thead class="thead-inverse">
+                        <tr class="table-info">
+                            <th>Label</th>
+                            <th>Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each predict}}
+                        <tr>
+                            <td>{{ tagName }}</td>
+                            <td>{{ probability }} % </td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr>
+<a href="/">Return home</a>
