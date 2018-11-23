@@ -28,10 +28,17 @@
 
 ![architecture](docs/arc.png)
 
+
+# 前提環境
+* Azureアカウント（クレジットカードが必要です）
+* Microsoftアカウント
+
 # 0.準備
 ## A. Azureのアカウント作成
 
-Azureのアカウントを作成します。
+環境を構築するためにAzureを使用します。
+
+もしアカウントをお持ちでない方は、Azureのアカウントを作成します。
 指示にしたがって登録を行ってください。
 
 https://azure.microsoft.com/ja-jp/free/
@@ -88,16 +95,13 @@ Cloud Shellのバーにある｛｝ボタンをクリックすると、エディ
 ![cloudshell-edit](docs/cloudshell-edit.png)
 
 
->![Azure Cloud Shell 公式サイト](https://docs.microsoft.com/ja-jp/azure/cloud-shell/overview)
-
-
+> [Azure Cloud Shell 公式サイト](https://docs.microsoft.com/ja-jp/azure/cloud-shell/overview)
 
 
 ## C. リソースグループ作成
 Azureでは、一つのアプリケーションを構成するためのサービス、Webサーバー、データベース、ストレージ、ネットワークなど、相互依存している複数のリソースを「リソースグループ」でまとめて管理することができます。
 
 次のコマンドを実行して、今回のハンズオンで使うAzureのリソースグループを作成します。
-
 
 ```
 $ RES_GROUP=AKS-HandsOn
@@ -111,6 +115,7 @@ $ az group create -g $RES_GROUP -l $LOCATION
 
 これで準備が整いましたので、環境をつくっていきましよう。
 
+
 # 1. Kubernetesクラスタの作成
 ハンズオンで利用するKubernetesクラスタを作成します。
 
@@ -122,6 +127,7 @@ $ AKS_CLUSTER=akscluster
 $ az aks create \
     -n $AKS_CLUSTER \
     -g $RES_GROUP \
+    --node-vm-size Standard_DS2_v2 \
     --node-count 2 \
     --generate-ssh-keys
 ```
@@ -131,6 +137,7 @@ $ az aks create \
 ここでは、node-countオプションで指定した、2台のWorkerノード(Standard_DS2_v2)からなるクラスタを作成しました。
 
 Workerノード1台当たりのスペックは以下の通りです。
+
 |サイズ|	vCPU|	メモリ: GiB|	一時ストレージ (SSD) GiB	|最大データ ディスク数|	
 |---|---|---|---|---|
 |Standard_DS2_v2|	2|	7|	14|	8|
@@ -150,9 +157,9 @@ Kubernetesクラスタを作成している間に、画像認識のためのア�
 ## 2.1 教師データのダウンロード＆解凍
 ここをクリックしてダウンロードします。zip形式で圧縮していますので、解凍してください。
 
-![download](docs/download.png)
+[![download](docs/download.png)](https://raw.githubusercontent.com/asashiho/ContainerDays1812/master/dataset.zip)
 
-なお、すでに学習用の画像データセットをお持ちの方は、そちらを使ってもかまいません。
+なお、すでに学習用の教師データをお持ちの方は、そちらを使ってもかまいません。
 
 ## 2.2 Custom Vision にサインイン
 
@@ -164,7 +171,7 @@ https://www.customvision.ai/
 
 トライアルで使用するかどうかを聞かれますので
 [ Continue with trial ] 
-を選びます
+を選びます。トライアルでは2つのプロジェクトまで作成できます。
 
 
 
@@ -259,12 +266,12 @@ Webアプリで使用する画像は、コンテナ内では保持せず、Azure
 まず、WebフロントアプリのサンプルをGithubからクローンします。
 
 ```bash
-$ git clone xxxxxxx
+$ git clone https://github.com/asashiho/ContainerDays1812
 ```
 
 ## 3.2 画像認識アプリのCloud Shellへアップロード
 
-手順2で作成した画像認識アプリをAzure Cloud Shellにアップロードします。zipファイルをブラウザにドラッグ＆ドロップでアップロードできます。
+手順2で作成した画像認識アプリをAzure Cloud Shellにアップロードします。zipファイルをブラウザにドラッグ＆ドロップすると、アップロードできます。
 ![upload](docs/cloudshell-upload.png)
 
 バージョンの異なる2種類の画像認識アプリをどちらもアップロードしてください
@@ -273,10 +280,11 @@ $ git clone xxxxxxx
 
 ## 3.3 画像認識アプリの解凍
 
-アップロードzip形式の画像認識アプリを解凍します。
+アップロードしたzip形式の画像認識アプリを解凍します。
 
 ```bash
 $ unzip xxxxxxx.DockerFile.Linux.zip -d ContainerDays1812/lunch_recognition
+
 $ unzip xxxxxxx.DockerFile.Linux.zip -d ContainerDays1812/dessert_recognition
 ```
 これで、Webアプリの準備ができました。
@@ -293,6 +301,7 @@ Webアプリの用意ができましたので、Kubernetesクラスタで動か�
 ```bash
 $ ACR_NAME=acrregistry$RANDOM
 $ echo $ACR_NAME
+
 $ az acr check-name -n $ACR_NAME
 ```
 
