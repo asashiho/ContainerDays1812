@@ -52,13 +52,14 @@ https://azure.microsoft.com/ja-jp/free/
 Azure Cloud ShellはWebブラウザでAzureのリソースを操作できるツールです。
 まず、以下のサイトにアクセスし、ログインします。
 
-https://shell.azure.com/
+[![Launch Cloud Shell](https://shell.azure.com/images/launchcloudshell.png "Launch Cloud Shell")](https://shell.azure.com)
 
 
 Cloud Shellでファイルを永続化するにはAzure Filesを使用します。そのため、初回起動時に、リソース グループ、ストレージ アカウント、Azure Files共有を作成するダイアログが表示されます。
 ここでは、Bash（Linux）を選びます。
 
 ![CloudShell](docs/first-cloudshell.png)
+
 
 次に、有効なAzureサブスクリプションを選択して "ストレージの作成"をクリックしてください。
 
@@ -79,7 +80,7 @@ $ az provider register -n Microsoft.ContainerService
 
 | Category            | Name                                                                            |
 |---------------------|---------------------------------------------------------------------------------|
-| Linux ツール        | Bashzshshtmuxdig                                                                |
+| Linux ツール        | Bash/zsh/sh/tmux/dig                                                                |
 | Azure ツール        | Azure CLI  |
 | テキスト エディター | vim/nano/emacs/code                                                                |
 | ソース管理          | git                                                                             |
