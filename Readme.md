@@ -1,5 +1,5 @@
 
-#### Japan Container Days HandsOn 
+#### Japan Container Days 2018 HandsOn 
 # Kubernetesで画像認識の推論アプリを動かしてみよう
 
 機械学習を既存のアプリケーションに組み込む事例が増えています。この推論環境として、コンテナを利用することで、機械学習アプリも通常のアプリケーションと同様に高い可搬性や拡張性をもたせることができます。
@@ -30,24 +30,12 @@
 
 
 # 前提環境
-* Azureアカウント（クレジットカードが必要です）
+* Azureアカウント（登録にはクレジットカードが必要です）
 * Microsoftアカウント
 
 # 0.準備
-## A. Azureのアカウント作成
 
-環境を構築するためにAzureを使用します。
-
-もしアカウントをお持ちでない方は、Azureのアカウントを作成します。
-指示にしたがって登録を行ってください。
-
-https://azure.microsoft.com/ja-jp/free/
-
-![Azure](docs/azure-account.png)
-
-すでにアカウントをお持ちの方は、そちらを使ってください。
-
-## B. Azure Cloud Shellへのアクセス
+## A. Azure Cloud Shellへのアクセス
 
 Azure Cloud ShellはWebブラウザでAzureのリソースを操作できるツールです。
 まず、以下のサイトにアクセスし、ログインします。
@@ -95,11 +83,12 @@ Cloud Shellのバーにある｛｝ボタンをクリックすると、エディ
 
 ![cloudshell-edit](docs/cloudshell-edit.png)
 
+※Cloud Shellでは、コピー[Ctrl+C] ペースト[Shift+Ins]です。
 
 > [Azure Cloud Shell 公式サイト](https://docs.microsoft.com/ja-jp/azure/cloud-shell/overview)
 
 
-## C. リソースグループ作成
+## B. リソースグループ作成
 Azureでは、一つのアプリケーションを構成するためのサービス、Webサーバー、データベース、ストレージ、ネットワークなど、相互依存している複数のリソースを「リソースグループ」でまとめて管理することができます。
 
 次のコマンドを実行して、今回のハンズオンで使うAzureのリソースグループを作成します。
@@ -137,7 +126,7 @@ $ az aks create \
 
 ここでは、node-countオプションで指定した、2台のWorkerノード(Standard_DS2_v2)からなるクラスタを作成しました。
 
-Workerノード1台当たりのスペックは以下の通りです。
+なお、Workerノード1台当たりのスペックは以下の通りです。
 
 |サイズ|	vCPU|	メモリ: GiB|	一時ストレージ (SSD) GiB	|最大データ ディスク数|	
 |---|---|---|---|---|
@@ -153,151 +142,46 @@ Workerノード1台当たりのスペックは以下の通りです。
 # 2. 画像の学習＆モデル作成
 Kubernetesクラスタを作成している間に、画像認識のためのアプリケーションを作成します。
 
-今回のハンズオンでは、ブラウザからオリジナル画像のアップロードを行うとTensorFlowの学習済みモデル(pb)とDockerfileなどを自動生成する「Azure Custom Vision」を使います。
-
-## 2.1 教師データのダウンロード＆解凍
-ここをクリックしてダウンロードします。zip形式で圧縮していますので、解凍してください。
-
-[![download](docs/download.png)](https://raw.githubusercontent.com/asashiho/ContainerDays1812/master/dataset.zip)
-
-なお、すでに学習用の教師データをお持ちの方は、そちらを使ってもかまいません。
-
-## 2.2 Custom Vision にサインイン
-
-Azure Custom Visionにアクセスし、[SIGN IN]します。サインインには、Microsoftアカウントが必要です。
-
-https://www.customvision.ai/
-
-![custom vision](docs/customvision.png)
-
-トライアルで使用するかどうかを聞かれますので
-[ Continue with trial ] 
-を選びます。トライアルでは2つのプロジェクトまで作成できます。
+今回のハンズオンでは、ブラウザからオリジナル画像のアップロードを行うだけで、画像認識をおこなうTensorFlowの学習済みモデル(pb)とDockerfileなどを自動生成できる「**Azure Custom Vision**」を使います。
 
 
+![customvision](docs/customvision-overview.png)
 
-## 2.3 プロジェクトの作成
+今回のハンズオンでは時間の都合でデモのみになりますが、詳細な手順は[こちら](customvision.md)にあります。少ないデータセットでも画像認識のモデルが作成できますので、ご興味ある方は、自宅などでぜひお試しください。
 
-ログイン出来たら、［New Project］をクリックし、以下の通り新規プロジェクトを作成します。
-
-|    項目                    |    設定値                                  |
-|----------------------------|--------------------------------------------|
-|    Name                    |    lunch                                   |
-|    Project Types           |    Classification                          |
-|    Classification Types    |    Multiclass (Single tag per image)       |
-|    Domains                 |    General (compact)                       |
-
-
-![project](docs/project.png)
-
-## 2.4 画像のアップロード
-学習に使う画像をアップロードします。
-解凍したデータセットの「lunch」を選んでください
-
-![upload](docs/upload.png)
-
-## 2.5 教師データのタグ付け
-次に、データセット「lunch」含まれる教師データに
-* Curry
-* Pasta
-* Sandwich
-
-それぞれタグをつけてアップロードします。このタグが、画像認識の結果になります。
-
-![tag](docs/tag.png)
-
-すべての教師データのタグ付けができると、各40枚の画像×3種類がアップロードできたことになります。
-
-## 2.6 学習
-学習データの準備ができたら、[ Train ] をクリックすると学習が始まります
-
-教師データを変えたり、枚数を増やしたりして、精度を上げてください
-
-![train](docs/train.png)
-
-[ QuickTest ]で推論結果を試すこともできます
-
-![quicktest](docs/quicktest.png)
-
-## 2.7 モデルのエクスポート
-次に、学習したモデルを[ Export ] をクリックして、ダウンロードします
-
-今回はKubernetesで動かすため[ Dockerfile ]
-を選びます
-
-![export](docs/export.png)
-
-エクスポートすると、Dockerfile／Tensorflowのモデルファイル／Predictionを行うためのPythonのアプリが自動生成され、Zipファイルにまとめてダウンロードできます。なお、コンテナのタイプはLinuxとWindowsが選べますが、今回は「Linux」としてください。
-
-![prediction](docs/prediction.png)
-
-
-
-同様の手順で新規プロジェクトを作成し、デザートメニューを認識する「dessert」を作成してください。この「dessert」では
-* chocolate
-* doughnut
-* strawberry cake
-
-を分類します。
-
-ここで作成したバージョンの異なる2つの画像認識アプリをダウンロードして、ハンズオンのバックエンドアプリとしてそのまま利用します。
-
-* xxxxxxx.DockerFile.Linux.zip
-* yyyyyyy.DockerFile.Linux.zip
-
-なおCustom Visionは、トライアルの場合2つまでしかProjectを作成できません。
 
 >[Azure Custom Vision 公式サイト](https://azure.microsoft.com/ja-jp/services/cognitive-services/custom-vision-service/)
 
 # 3. Webアプリの開発
-次に、Kubernetesクラスタで動かすサンプルアプリを用意します。
+次に、Kubernetesクラスタで動かすサンプルアプリをGithubからクローンします。
+
+```bash
+$ git clone https://github.com/asashiho/ContainerDays1812
+$ cd ContainerDays1812/
+```
+
 
 今回のサンプルアプリケーションは以下の構成になっています。
 クライアントからのリクエストを受け付ける「Webフロント」はNode.jsで書かれ、リクエストされた画像を画像認識アプリに問い合わせ、結果をクライアントに返します。
 
 
-画像認識アプリは、手順2で作成したもので、TensorFlowのモデルが含まれるPythonのWebAPIです。ランチメニューを推論するもの(v1.0)と、デザートメニューを推論するもの(v2.0)をKubernetesクラスタで動かします。
+画像認識アプリは、ランチメニューを推論するもの(v1.0)と、デザートメニューを推論するもの(v2.0)をKubernetesクラスタで動かします。
 
-Webアプリで使用する画像は、コンテナ内では保持せず、Azureのストレージサービスである「Azure Blob Storage」を使います。
+あらかじめ、手順2で作成したものでTensorFlowのモデルが含まれるPythonのWeb APIになっています。
+
+また、Webアプリで使用する画像は、コンテナ内では保持せず、Azureのストレージサービスである「**Azure Blob Storage**」を使います。
 
 
 ![webapp](docs/webapp.png)
 
-## 3.1 Webフロントアプリのサンプルクローン
-まず、WebフロントアプリのサンプルをGithubからクローンします。
-
-```bash
-$ git clone https://github.com/asashiho/ContainerDays1812
-```
-
-## 3.2 画像認識アプリのCloud Shellへアップロード
-
-手順2で作成した画像認識アプリをAzure Cloud Shellにアップロードします。zipファイルをブラウザにドラッグ＆ドロップすると、アップロードできます。
-![upload](docs/cloudshell-upload.png)
-
-バージョンの異なる2種類の画像認識アプリをどちらもアップロードしてください
-
-
-
-## 3.3 画像認識アプリの解凍
-
-アップロードしたzip形式の画像認識アプリを解凍します。
-
-```bash
-$ unzip xxxxxxx.DockerFile.Linux.zip -d ContainerDays1812/lunch_recognition
-
-$ unzip xxxxxxx.DockerFile.Linux.zip -d ContainerDays1812/dessert_recognition
-```
-これで、Webアプリの準備ができました。
-
 
 
 # 4. コンテナレジストリの作成
-Webアプリの用意ができましたので、Kubernetesクラスタで動かすWebアプリのコンテナイメージを格納するためのプライベートレジストリを作成します。
+Webアプリの用意ができましたので、Kubernetesクラスタで動かすコンテナイメージを格納するためのプライベートレジストリを作成します。
 
 ## 4.1 レジストリ名の名前チェック
 レジストリはAzure Container Registory レジストリ名は任意の名前でかまいませんが、一意でなければいけません。
-次のコマンドで、重複がないか(nameAvailable: true)をチェックできます。
+次のコマンドで、重複がないかをチェックできます。
 
 ```bash
 $ ACR_NAME=acrregistry$RANDOM
@@ -356,46 +240,23 @@ $ az acr build --registry $ACR_NAME --image food-recognition:v2.0 dessert_recogn
 
 ![dockerbuild](docs/dockerbuild.png)
 
->**[Note] Custom Visionが利用できないときは**
->
->Custom Visionでうまく画像認識アプリがダウンロードできないときは、Githubからクローンしたサンプルの中の
->* ContainerDays1812/lunch_recognition/sample
->* ContainerDays1812/dessert_recognition/sample
->
->にありますので、こちらを使用してビルドしてください。
 
 # 6. Webアプリが利用するストレージの作成
 今回のハンズオンでは、Webアプリで使う画像データを、コンテナ内ではなくクラウドのストレージサービスで管理します。
 
-## 6.1 ストレージアカウントの作成
 次のコマンドを実行して、Azure Blob Storageのアカウントを作成します。アカウント名は任意で構いませんが、一意である必要があります。
 
 ```bash
 $ BLOB_ACCOUNT=blobstorage$RANDOM
-
-$ az storage account create \
-    -n $BLOB_ACCOUNT \
-    -l $LOCATION  \
-    -g $RES_GROUP \
-    --sku Standard_LRS  \
-    --kind blobstorage  \
-    --access-tier hot
 ```
-![storage](docs/storage.png)
+次のスクリプトを実行して、ストレージアカウントとストレージを作成します。
 
-## 6.2ストレージの作成
-
-作成した、アカウントでストレージを作成します。
 ```bash
-$ BLOB_KEY=$(az storage account keys list -g $RES_GROUP -n $BLOB_ACCOUNT --query '[0].value' --output tsv)
-
-$ az storage container create \
-    -n images \
-    --account-name $BLOB_ACCOUNT \
-    --account-key $BLOB_KEY \
-    --public-access container
+$ ./create-storage.sh $BLOB_ACCOUNT $LOCATION $RES_GROUP
 ```
-これで、クラウドストレージの用意ができました。Webアプリからこのストレージを使用するときに必要な接続情報は、KubernetesのConfigMapで管理します。(詳細は後述)
+
+これでアプリの永続データを管理するための、クラウドストレージの用意ができました。Webアプリからこのストレージを使用するときに必要な接続情報は、KubernetesのConfigMapで管理します。
+(詳細:7.4 ConfigMapのマニフェストファイル作成)
 
 >[Azure Blob Storage 公式サイト](https://azure.microsoft.com/ja-jp/services/storage/blobs/)
 
@@ -463,7 +324,7 @@ Allocatable:
 ```bash
 $ az acr list -g $RES_GROUP --query "[].{acrLoginServer:loginServer}" -o tsv
 
-acrregistryxxxx.azurecr.io 
+acrregistryxxxx.azurecr.io
 ```
 ここで、WebフロントアプリのDeploymentのコンテナイメージ格納場所を修正します。次のマニフェストファイルは、コンテナイメージが「acrregistryxxxx.azurecr.io」に格納されている場合の例です。
 
@@ -559,9 +420,60 @@ DefaultEndpointsProtocol=https;EndpointSuffix=core.windows.net;AccountName=blobs
 ```
 ※ 今回はハンズオンのためConfigMapを使用していますが、Keyなどの秘匿情報は「Sercret」を使ってください。
 
+## 7.6 バックエンドの画像認識アプリをデプロイ
 
-## 7.6 Webフロントアプリのデプロイ
-準備ができましたので、次のコマンドを実行して、まず、Webフロントアプリをデプロイします。
+まず、バックエンドとなる画像認識アプリをデプロイします。
+```bash
+$ kubectl apply -f config/backend-deployment.yaml
+```
+このマニフェストファイルで2つの画像認識アプリPodが起動します。また、Podのリソース要求とリソース制限を指定しています。
+
+```config/backend-deployment.yaml
+# 基本項目
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: food-deploy
+
+# Deploymentのスペック
+spec:
+  # レプリカ数
+  replicas: 2
+  selector:
+    matchLabels:
+      app: food   # テンプレートの検索条件
+
+  # Podのテンプレート
+  template:
+    metadata:
+      labels:
+        app: food
+～中略～
+        # リソース要求と制限
+        resources: 
+          requests:
+            cpu: 400m
+            memory: 1Gi
+          limits:
+            cpu: 400m
+            memory: 1Gi
+```
+
+次のコマンドを実行し、Podの状態を確認します。
+
+```bash
+$ kubectl get pod
+NAME                           READY   STATUS    RESTARTS   AGE
+food-deploy-5ff5cc749d-7q9tw   1/1     Running   0          96s
+food-deploy-5ff5cc749d-wfq6x   1/1     Running   0          96s
+```
+
+マニフェストファイルに指定した通り、2つのPodが起動します。
+
+
+
+## 7.7 Webフロントアプリのデプロイ
+つづいて、Webフロントアプリをデプロイします。
 
 ```bash
 $ kubectl apply -f config/front-deployment.yaml
@@ -617,58 +529,7 @@ spec:
                 name: project-config
                 key: keystring
 ```
-次のコマンドを実行し、Podの状態を確認します。
 
-```bash
-$ kubectl get pod
-NAME                           READY   STATUS    RESTARTS   AGE
-front-deploy-56454d478-95v2b   1/1     Running   0          73s
-front-deploy-56454d478-gszt4   1/1     Running   0          73s
-front-deploy-56454d478-qzxn7   1/1     Running   0          73s
-```
-![front-deploy](docs/front-deploy.png)
-
-マニフェストファイルに指定した通り、3つのPodが起動します。
-
-
-## 7.7 バックエンドの画像認識アプリをデプロイ
-
-つづいて、バックエンドとなる画像認識アプリをデプロイします。
-```bash
-$ kubectl apply -f config/backend-deployment.yaml
-```
-こちらは、Webフロントアプリと同様ですが、2つの画像認識アプリPodが起動します。また、Podのリソース要求とリソース制限を指定しています。
-
-```config/backend-deployment.yaml
-# 基本項目
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: food-deploy
-
-# Deploymentのスペック
-spec:
-  # レプリカ数
-  replicas: 2
-  selector:
-    matchLabels:
-      app: food   # テンプレートの検索条件
-
-  # Podのテンプレート
-  template:
-    metadata:
-      labels:
-        app: food
-～中略～
-        # リソース要求と制限
-        resources: 
-          requests:
-            cpu: 400m
-            memory: 1Gi
-          limits:
-            cpu: 400m
-            memory: 1Gi
-```
 
 Podの状態を確認します。3つのWebフロントアプリのPod(front-deploy-xxx)と、2つの画像認識アプリのPod(food-deploy-xxx)が起動しているのが分かります。
 
