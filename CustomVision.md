@@ -83,7 +83,7 @@ https://www.customvision.ai/
 
 同様の手順で新規プロジェクトを作成し、デザートメニューを認識する「dessert」を作成してください。この「dessert」では
 * chocolate
-* doughnut
+* soft cream
 * strawberry cake
 
 を分類します。
