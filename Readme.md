@@ -97,11 +97,11 @@ Azureでは、一つのアプリケーションを構成するためのサービ
 
 ```
 $ RES_GROUP=AKS-HandsOn
-$ LOCATION=japaneast
+$ LOCATION=eastus
 
 $ az group create -g $RES_GROUP -l $LOCATION
 ```
-ここでは、「AKS-HandsOn」という名前のリソースグループを、Azureの東日本リージョン(japaneast)に作成しました。このリソースグループに、コンテナレジストリやKubernetesクラスタ、Webアプリの永続データを保存するためのクラウドストレージを作成していきます。
+ここでは、「AKS-HandsOn」という名前のリソースグループを、Azureのeastusに作成しました。このリソースグループに、コンテナレジストリやKubernetesクラスタ、Webアプリの永続データを保存するためのクラウドストレージを作成していきます。
 
 ![create-resgroup](docs/resgroup.png)
 
