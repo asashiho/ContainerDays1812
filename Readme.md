@@ -606,7 +606,7 @@ $ kubectl get svc
 NAME               TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)        AGE
 food-recognition   ClusterIP      10.0.160.179   <none>         80/TCP         7m30s
 kubernetes         ClusterIP      10.0.0.1       <none>         443/TCP        104m
-web-front          LoadBalancer   10.0.253.85    13.78.10.170   80:31755/TCP   7m30s                                         
+web-front          LoadBalancer   10.0.253.85    40.117.82.215   80:31755/TCP   7m30s                                         
 ```
 
 # 8. 画像認識アプリの動作確認
