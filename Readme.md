@@ -38,15 +38,17 @@
 ## A. Azure Cloud Shellへのアクセス
 
 Azure Cloud ShellはWebブラウザでAzureのリソースを操作できるツールです。
-まず、以下のサイトにアクセスし、ログインします。
 
-[![Launch Cloud Shell](https://shell.azure.com/images/launchcloudshell.png "Launch Cloud Shell")](https://shell.azure.com)
+以下のサイトにアクセスし、Azureにログインします。
 
+https://portal.azure.com/
+
+Cloud Shellを起動するときは、ポータル上部の［>_］をクリックしてください。
 
 Cloud Shellでファイルを永続化するにはAzure Filesを使用します。そのため、初回起動時に、リソース グループ、ストレージ アカウント、Azure Files共有を作成するダイアログが表示されます。
 ここでは、Bash（Linux）を選びます。
 
-![CloudShell](docs/first-cloudshell.png)
+![CloudShell](docs/cloudshell-open.png)
 
 
 次に、有効なAzureサブスクリプションを選択して "ストレージの作成"をクリックしてください。
